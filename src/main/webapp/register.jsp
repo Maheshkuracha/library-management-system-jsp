@@ -5,37 +5,46 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Register | Library Management System</title>
+<title>Register</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
 
-<h2>Student Registration</h2>
+	<h2>Student Registration</h2>
 
-<form action="registerProcess.jsp" method="post">
+	<%
+	if (request.getParameter("error") != null) {
+	%>
+	<h3 style="color: red;">
+		<%=request.getParameter("error")%>
+	</h3>
+	<%
+	}
+	%>
 
-Name:
-<input type="text" name="name" required>
+	<%
+	if (request.getParameter("msg") != null) {
+	%>
+	<h3 style="color: green;">
+		<%=request.getParameter("msg")%>
+	</h3>
+	<%
+	}
+	%>
 
-<br><br>
+	<form action="<%=request.getContextPath()%>/registerProcess.jsp"
+		method="post">
 
-Email:
-<input type="email" name="email" required>
+		Name: <input type="text" name="name" required> <br> <br>
+		Email: <input type="email" name="email" required> <br> <br>
+		Password: <input type="password" name="password" required> <br>
+		<br> <input type="submit" value="Register">
 
-<br><br>
+	</form>
 
-Password:
-<input type="password" name="password" required>
+	<br>
 
-<br><br>
-
-<input type="submit" value="Register">
-
-</form>
-
-<br>
-
-<a href="login.jsp">Already have account? Login</a>
+	<a href="login.jsp">Already have account? Login</a>
 
 </body>
 </html>

@@ -5,46 +5,34 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Login | Library Management System</title>
+<title>Login</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
 
-<h2>Student Login</h2>
+	<h2>Student Login</h2>
 
-<%
-String msg = request.getParameter("msg");
+	<%
+	if (request.getParameter("msg") != null) {
+	%>
+	<h3 style="color: green;">
+		<%=request.getParameter("msg")%>
+	</h3>
+	<%
+	}
+	%>
 
-if(msg != null){
-%>
+	<form action="loginProcess.jsp" method="post">
 
-<h3 style="color: green;">
-<%=msg%>
-</h3>
+		Email: <input type="email" name="email" required> <br> <br>
+		Password: <input type="password" name="password" required> <br>
+		<br> <input type="submit" value="Login">
 
-<%
-}
-%>
+	</form>
 
-<form action="loginProcess.jsp" method="post">
+	<br>
 
-Email:
-<input type="email" name="email" required>
-
-<br><br>
-
-Password:
-<input type="password" name="password" required>
-
-<br><br>
-
-<input type="submit" value="Login">
-
-</form>
-
-<br>
-
-<a href="register.jsp">New User? Register</a>
+	<a href="register.jsp">New User? Register</a>
 
 </body>
 </html>

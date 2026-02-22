@@ -2,61 +2,70 @@
 	pageEncoding="UTF-8"%>
 
 <%@ page import="java.sql.*"%>
-<%@ page import="com.library.util.DBConnection"%>
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Registration Process</title>
-<link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
 
 <%
-
 String name = request.getParameter("name");
 String email = request.getParameter("email");
 String password = request.getParameter("password");
 
 Connection con = null;
-PreparedStatement ps = null;
+PreparedStatement checkPs = null;
+PreparedStatement insertPs = null;
+ResultSet rs = null;
 
 try {
 
-	con = DBConnection.getConnection();
+	Class.forName("com.mysql.cj.jdbc.Driver");
 
-	ps = con.prepareStatement(
-	"INSERT INTO users(name,email,password) VALUES(?,?,?)");
+	con = DriverManager.getConnection("jdbc:mysql://localhost:3306/libraryjsp", "root", "root");
 
-	ps.setString(1, name);
-	ps.setString(2, email);
-	ps.setString(3, password);
+	checkPs = con.prepareStatement("SELECT * FROM users WHERE email=?");
 
-	ps.executeUpdate();
+	checkPs.setString(1, email);
 
+	rs = checkPs.executeQuery();
+
+	if (rs.next()) {
+
+		response.sendRedirect("register.jsp?error=User already exists");
+
+	} else {
+
+		insertPs = con.prepareStatement("INSERT INTO users(name,email,password) VALUES(?,?,?)");
+
+		insertPs.setString(1, name);
+		insertPs.setString(2, email);
+		insertPs.setString(3, password);
+
+		insertPs.executeUpdate();
+
+		response.sendRedirect("login.jsp?msg=Registration successful");
+	}
+
+} catch (Exception e) {
+
+	e.printStackTrace();
+
+	response.sendRedirect("register.jsp?error=Database error");
+
+} finally {
+
+	try {
+
+		if (rs != null)
+	rs.close();
+
+		if (checkPs != null)
+	checkPs.close();
+
+		if (insertPs != null)
+	insertPs.close();
+
+		if (con != null)
+	con.close();
+
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+}
 %>
-
-<h3>Registration Successful!</h3>
-
-<a href="login.jsp">Login Now</a>
-
-<%
-
-}
-catch (Exception e) {
-
-	out.println("Error: " + e);
-
-}
-finally {
-
-	if(ps!=null) ps.close();
-	if(con!=null) con.close();
-
-}
-
-%>
-
-</body>
-</html>
